@@ -38,4 +38,4 @@ function mapStateToProps(state) {
 }
 
 // Wiring up action creator fetchPosts
-export default connect(null, { fetchPosts })(PostsIndex);
+export default connect(mapStateToProps, { fetchPosts })(PostsIndex);

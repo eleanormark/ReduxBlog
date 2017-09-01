@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Field, reduxForm } from 'redux-form';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { createPost } from '../actions';
 
 class PostsNew extends Component {
 
@@ -30,6 +32,10 @@ class PostsNew extends Component {
   onSubmit(values) {
     // added bind so this === component
     console.log(values);
+    this.props.createPost(values, () => {
+      this.props.history.push('/');
+    });
+
   }
 
   render() {
@@ -39,9 +45,9 @@ class PostsNew extends Component {
 
     return (
       <form onSubmit={ handleSubmit(this.onSubmit.bind(this)) }>
-        <Field label="Title" name="nameTitle" component={this.renderField} />
-        <Field label="Categories" name="nameCategories" component={this.renderField} />
-        <Field label="Content" name="nameContent" component={this.renderField} />
+        <Field label="Title" name="title" component={this.renderField} />
+        <Field label="Categories" name="categories" component={this.renderField} />
+        <Field label="Content" name="content" component={this.renderField} />
         <button type="submit" className="btn btn-primary">Submit</button>
         <Link to="/" className="btn btn-danger">Cancel</Link>
       </form>
@@ -57,14 +63,14 @@ function validate(values) {
   const errors = {};
 
   //Validate the inputs from the 'values' obj
-  if (!values.nameTitle) {
-    errors.nameTitle = 'Enter a username';
+  if (!values.title) {
+    errors.title = 'Enter a username';
   }
-  if (!values.nameCategories) {
-    errors.nameCategories = 'Enter categories';
+  if (!values.categories) {
+    errors.categories = 'Enter categories';
   }
-  if(!values.nameContent) {
-    errors.nameContent = 'Enter some content';
+  if(!values.content) {
+    errors.content = 'Enter some content';
   }
 
   // if errors is empty, the form is fine to ubmit
@@ -72,10 +78,14 @@ function validate(values) {
   return errors;
 }
 
+
+// connect and Reduxform helpers
 // ReduxForm is only responsible for handling state and validation of our form
 // ReduxForm is a helper that allow redux form to communicate
 // directly from the component to the reducer we set up.
 export default reduxForm({
   validate,
   form: 'PostsNewForm'
-})(PostsNew);
+})(
+  connect(null, {createPost})(PostsNew) //returns react component
+);
